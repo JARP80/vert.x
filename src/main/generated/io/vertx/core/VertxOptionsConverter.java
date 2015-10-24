@@ -54,6 +54,9 @@ public class VertxOptionsConverter {
     if (json.getValue("eventLoopPoolSize") instanceof Number) {
       obj.setEventLoopPoolSize(((Number)json.getValue("eventLoopPoolSize")).intValue());
     }
+    if (json.getValue("eventLoopPoolThreadsPrefix") instanceof String) {
+      obj.setEventLoopPoolThreadsPrefix((String)json.getValue("eventLoopPoolThreadsPrefix"));
+    }
     if (json.getValue("haEnabled") instanceof Boolean) {
       obj.setHAEnabled((Boolean)json.getValue("haEnabled"));
     }
@@ -97,6 +100,9 @@ public class VertxOptionsConverter {
     json.put("clusterPublicPort", obj.getClusterPublicPort());
     json.put("clustered", obj.isClustered());
     json.put("eventLoopPoolSize", obj.getEventLoopPoolSize());
+    if (obj.getEventLoopPoolThreadsPrefix() != null) {
+      json.put("eventLoopPoolThreadsPrefix", obj.getEventLoopPoolThreadsPrefix());
+    }
     json.put("haEnabled", obj.isHAEnabled());
     if (obj.getHAGroup() != null) {
       json.put("haGroup", obj.getHAGroup());

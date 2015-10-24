@@ -37,6 +37,11 @@ public class VertxOptions {
   public static final int DEFAULT_EVENT_LOOP_POOL_SIZE = 2 * Runtime.getRuntime().availableProcessors();
 
   /**
+   * The default prefix of event loop threads to be used  = vert.x-eventloop-thread-
+   */
+  public static final String DEFAULT_EVENT_LOOP_THREAD_PREFIX = "vert.x-eventloop-thread-";
+
+  /**
    * The default number of threads in the worker pool = 20
    */
   public static final int DEFAULT_WORKER_POOL_SIZE = 20;
@@ -119,6 +124,7 @@ public class VertxOptions {
   private static final long DEFAULT_WARNING_EXECPTION_TIME = 5l * 1000 * 1000000;
 
   private int eventLoopPoolSize = DEFAULT_EVENT_LOOP_POOL_SIZE;
+  private String eventLoopPoolThreadsPrefix = DEFAULT_EVENT_LOOP_THREAD_PREFIX;
   private int workerPoolSize = DEFAULT_WORKER_POOL_SIZE;
   private int internalBlockingPoolSize = DEFAULT_INTERNAL_BLOCKING_POOL_SIZE;
   private boolean clustered = DEFAULT_CLUSTERED;
@@ -151,6 +157,7 @@ public class VertxOptions {
    */
   public VertxOptions(VertxOptions other) {
     this.eventLoopPoolSize = other.getEventLoopPoolSize();
+    this.eventLoopPoolThreadsPrefix = other.getEventLoopPoolThreadsPrefix();
     this.workerPoolSize = other.getWorkerPoolSize();
     this.clustered = other.isClustered();
     this.clusterHost = other.getClusterHost();
@@ -201,6 +208,26 @@ public class VertxOptions {
       throw new IllegalArgumentException("eventLoopPoolSize must be > 0");
     }
     this.eventLoopPoolSize = eventLoopPoolSize;
+    return this;
+  }
+
+  /**
+   * Get the event loop threads prefix.
+   *
+   * @return The threads prefix
+   */
+  public String getEventLoopPoolThreadsPrefix() {
+    return eventLoopPoolThreadsPrefix;
+  }
+
+  /**
+   * Set the event loop threads prefix.
+   *
+   * @param eventLoopPoolThreadsPrefix  the threads prefix to use
+   * @return a reference to this, so the API can be used fluently
+   */
+  public VertxOptions setEventLoopPoolThreadsPrefix(String eventLoopPoolThreadsPrefix) {
+    this.eventLoopPoolThreadsPrefix = eventLoopPoolThreadsPrefix;
     return this;
   }
 
@@ -633,6 +660,9 @@ public class VertxOptions {
     VertxOptions that = (VertxOptions) o;
 
     if (eventLoopPoolSize != that.eventLoopPoolSize) return false;
+    if (eventLoopPoolThreadsPrefix != null
+            ? !eventLoopPoolThreadsPrefix.equals(that.eventLoopPoolThreadsPrefix)
+            : that.eventLoopPoolThreadsPrefix != null) return false;
     if (workerPoolSize != that.workerPoolSize) return false;
     if (internalBlockingPoolSize != that.internalBlockingPoolSize) return false;
     if (clustered != that.clustered) return false;
@@ -659,6 +689,7 @@ public class VertxOptions {
   @Override
   public int hashCode() {
     int result = eventLoopPoolSize;
+    result = 31 * result + (eventLoopPoolThreadsPrefix != null ? eventLoopPoolThreadsPrefix.hashCode() : 0);
     result = 31 * result + workerPoolSize;
     result = 31 * result + internalBlockingPoolSize;
     result = 31 * result + (clustered ? 1 : 0);
@@ -684,6 +715,7 @@ public class VertxOptions {
   public String toString() {
     return "VertxOptions{" +
       "eventLoopPoolSize=" + eventLoopPoolSize +
+      ", eventLoopPoolThreadsPrefix=" + eventLoopPoolThreadsPrefix +
       ", workerPoolSize=" + workerPoolSize +
       ", internalBlockingPoolSize=" + internalBlockingPoolSize +
       ", clustered=" + clustered +
